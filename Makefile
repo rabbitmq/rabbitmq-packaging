@@ -26,7 +26,7 @@ $(error Unable to detect platform. Please open a ticket with the output of uname
 endif
 endif
 
-all: packages
+all: package-deb package-rpm package-windows
 	@:
 
 # --------------------------------------------------------------------
@@ -38,9 +38,7 @@ all: packages
 	package-rpm-redhat package-rpm-fedora \
 	package-rpm-rhel6 package-rpm-rhel7 package-rpm-rhel8 \
 	package-rpm-suse package-rpm-opensuse package-rpm-sles11 \
-	package-windows \
-	package-generic-unix \
-	docker-image
+	package-windows
 
 PACKAGES_DIR ?= ../PACKAGES
 SOURCE_DIST_FILE ?= $(wildcard $(PACKAGES_DIR)/rabbitmq-server-*.tar.xz)
@@ -67,9 +65,6 @@ endif
 VARS = SOURCE_DIST_FILE="$(abspath $(SOURCE_DIST_FILE))" \
        PACKAGES_DIR="$(abspath $(PACKAGES_DIR))" \
        SIGNING_KEY="$(SIGNING_KEY)"
-
-packages: package-deb package-rpm package-windows package-generic-unix
-	@:
 
 package-deb: $(SOURCE_DIST_FILE)
 	$(gen_verbose) $(MAKE) -C debs/Debian $(VARS) all $(DO_CLEAN)
@@ -106,15 +101,9 @@ package-windows: $(SOURCE_DIST_FILE)
 	$(gen_verbose) $(MAKE) -C windows $(VARS) all $(DO_CLEAN)
 	$(verbose) $(MAKE) -C windows-exe $(VARS) all $(DO_CLEAN)
 
-package-generic-unix: $(SOURCE_DIST_FILE)
-	$(gen_verbose) $(MAKE) -C generic-unix $(VARS) all $(DO_CLEAN)
-
-docker-image:
-	$(gen_verbose) $(MAKE) -C docker-image $(VARS) all $(DO_CLEAN)
-
 .PHONY: clean
 
 clean:
-	for subdir in debs/Debian RPMS/Fedora windows windows-exe generic-unix docker-image; do \
+	for subdir in debs/Debian RPMS/Fedora windows windows-exe; do \
 		$(MAKE) -C "$$subdir" clean; \
 	done
