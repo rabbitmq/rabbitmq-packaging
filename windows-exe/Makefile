@@ -18,7 +18,7 @@ all: dist
 dist: rabbitmq-$(VERSION).nsi rabbitmq_server-$(VERSION)
 	makensis -V2 rabbitmq-$(VERSION).nsi
 
-	if test "$(PACKAGES_DIR)"; then \
+	@if test "$(PACKAGES_DIR)"; then \
 		mkdir -p "$(PACKAGES_DIR)"; \
 		mv rabbitmq-server-$(VERSION).exe "$(PACKAGES_DIR)"; \
 	fi
