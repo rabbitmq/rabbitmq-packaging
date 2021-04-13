@@ -69,7 +69,7 @@ start_rabbitmq () {
         ensure_pid_dir
         set +e
         RABBITMQ_PID_FILE=$PID_FILE start-stop-daemon --quiet \
-            --chuid rabbitmq --start \
+            --chuid $USER --user $USER --start \
             --pidfile "$PID_FILE" --background \
             --startas /bin/sh -- -c "exec $DAEMON >'${RABBITMQ_SERVER_CONSOLE_OUTPUT_DIR}/startup_log' 2>'${RABBITMQ_SERVER_CONSOLE_OUTPUT_DIR}/startup_err'"
         $CONTROL wait --timeout $RABBITMQ_STARTUP_TIMEOUT $PID_FILE >/dev/null 2>&1
