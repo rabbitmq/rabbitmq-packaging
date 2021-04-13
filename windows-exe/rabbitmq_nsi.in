@@ -1,3 +1,4 @@
+; vim:ft=nsis:
 ; Use the "Modern" UI
 !include MUI2.nsh
 !include LogicLib.nsh
@@ -115,6 +116,30 @@ Section "RabbitMQ Server (required)" Rabbit
   WriteRegDWORD HKLM "${uninstall}" "EstimatedSize" "$0"
 
   WriteUninstaller "uninstall.exe"
+
+  ; Set permissions to ensure a non-privileged user cannot write to the install
+  ; directory:
+  ;     1. Disable permissions inheritance from the parent directory (which may
+  ;        give all permissions to non-privileged users).
+  ;     2. Give ReadAndExecute and Synchronize permissions only.
+  ;
+  ; We do this at the end in case we mess permissions up: if we did this
+  ; earlier and removed permissions to the setup process, it wouldn't be able
+  ; to write the uninstall.exe file.
+
+  AccessControl::DisableFileInheritance "$INSTDIR"
+  Pop $R0
+  ${If} $R0 == error
+    Pop $R0
+    DetailPrint `Failed to disable permissions inheritance on $INSTDIR: $R0`
+  ${EndIf}
+
+  AccessControl::SetOnFile "$INSTDIR" "(BU)" "GenericRead + GenericExecute"
+  Pop $R0
+  ${If} $R0 == error
+    Pop $R0
+    DetailPrint `Failed to set user permissions on $INSTDIR: $R0`
+  ${EndIf}
 SectionEnd
 
 ;--------------------------------
