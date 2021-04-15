@@ -154,6 +154,8 @@ ifneq ($(SIGNING_KEY),)
 		rpm --addsign \
 		--define '_signature gpg' \
 		--define '_gpg_name $(SIGNING_KEY)' \
+		--define '__gpg /usr/bin/gpg' \
+		--define '_gpg_path $(GNUPGHOME)' \
 		SRPMS/*-$(RPM_VERSION)*.rpm \
 		RPMS/noarch/*-$(RPM_VERSION)*.rpm \
 		< /dev/null
