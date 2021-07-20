@@ -22,7 +22,7 @@ BuildRequires:  systemd
 %endif
 
 Requires: erlang >= %{erlang_minver}
-Requires: logrotate, socat
+Requires: logrotate
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-%{_arch}-root
 Summary: The RabbitMQ server
 
