@@ -43,7 +43,6 @@ RabbitMQ is an open source multi-protocol messaging broker.
 %define _rabbit_erllibdir %{_rabbit_libdir}/lib/rabbitmq_server-%{upstream_version}
 %define _rabbit_server_ocf scripts/rabbitmq-server.ocf
 %define _plugins_state_dir %{_localstatedir}/lib/rabbitmq/plugins
-%define _rabbit_server_ha_ocf scripts/rabbitmq-server-ha.ocf
 %define _rabbitmqctl_autocomplete scripts/rabbitmqctl-autocomplete.sh
 %define _rabbitmq_user rabbitmq
 %define _rabbitmq_group rabbitmq
