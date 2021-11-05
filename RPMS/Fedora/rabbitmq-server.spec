@@ -41,7 +41,6 @@ RabbitMQ is an open source multi-protocol messaging broker.
 # We want to install into /usr/lib, even on 64-bit platforms
 %define _rabbit_libdir %{_exec_prefix}/lib/rabbitmq
 %define _rabbit_erllibdir %{_rabbit_libdir}/lib/rabbitmq_server-%{upstream_version}
-%define _rabbit_server_ocf scripts/rabbitmq-server.ocf
 %define _plugins_state_dir %{_localstatedir}/lib/rabbitmq/plugins
 %define _rabbitmqctl_autocomplete scripts/rabbitmqctl-autocomplete.sh
 %define _rabbitmq_user rabbitmq
