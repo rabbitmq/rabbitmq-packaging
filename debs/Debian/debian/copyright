@@ -4,7 +4,7 @@ Upstream-Contact: Jean-Sébastien Pédron <jean-sebastien@rabbitmq.com>
 Source: https://github.com/rabbitmq/rabbitmq-server
 
 Files: *
-Copyright: 2007-2020 VMware, Inc. or its affiliates.
+Copyright: 2007-2022 VMware, Inc. or its affiliates.
 License: MPL-2.0
 
 Files: deps/rabbit_common/src/rabbit_numerical.erl deps/rabbit_common/src/rabbit_http_util.erl
@@ -378,7 +378,7 @@ file, then You may include the notice in a location (such as a LICENSE
 file in a relevant directory) where a recipient would be likely to look
 for such a notice.
 
-Copyright (c) 2007-2020 VMware, Inc. or its affiliates.
+Copyright (c) 2007-2022 VMware, Inc. or its affiliates.
 
 License: MIT
  This is the MIT license
