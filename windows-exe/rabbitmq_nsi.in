@@ -299,7 +299,7 @@ Function findErlang
 
   ${If} $2 = "not-found"
     MessageBox MB_YESNO|MB_ICONEXCLAMATION "Erlang could not be detected.$\nYou must install Erlang before installing RabbitMQ. Would you like the installer to open a browser window to the Erlang download site?" IDNO abort
-    ExecShell "open" "https://www.erlang.org/download.html"
+    ExecShell "open" "https://www.erlang.org/downloads"
     abort:
     Abort
   ${Else}
