@@ -12,7 +12,7 @@ Unicode false
 !addplugindir plugins
 
 !define ERLANG_FROM_VERSION 11.1.4  ; https://www.erlang.org/patches/otp-23.2#erts-11.1.4
-!define ERLANG_TO_VERSION   ""      ; https://www.erlang.org/patches/otp-24.3.4#erts-12.3.2
+!define ERLANG_TO_VERSION           ; https://www.erlang.org/patches/otp-24.3.4#erts-12.3.2
 
 !define env_hklm 'HKLM "SYSTEM\CurrentControlSet\Control\Session Manager\Environment"'
 !define uninstall "Software\Microsoft\Windows\CurrentVersion\Uninstall\RabbitMQ"
@@ -382,14 +382,14 @@ Function findErlang
   ${Else}
     ${VersionCompare} $2 ${ERLANG_FROM_VERSION} $0
     ${If} $0 = 2
-      MessageBox MB_OK|MB_ICONEXCLAMATION "Your installed version of Erlang ($2) is too old. Please install a more recent version [${ERLANG_FROM_VERSION},${ERLANG_TO_VERSION})."
+      MessageBox MB_OK|MB_ICONEXCLAMATION "Your installed version of Erlang ($2) is too old. Please install a more recent version [${ERLANG_FROM_VERSION},${ERLANG_TO_VERSION}]."
       Abort
     ${EndIf}
 
-    ${If} ${ERLANG_TO_VERSION} != ""
-      ${VersionCompare} $2 ${ERLANG_TO_VERSION} $0
-      ${If} $0 <> 2
-        MessageBox MB_OK|MB_ICONEXCLAMATION "Your installed version of Erlang ($2) is too new. Please install a less recent version [${ERLANG_FROM_VERSION},${ERLANG_TO_VERSION})."
+    ${If} "${ERLANG_TO_VERSION}" != ""
+      ${VersionCompare} $2 "${ERLANG_TO_VERSION}" $0
+      ${If} $0 = 1
+        MessageBox MB_OK|MB_ICONEXCLAMATION "Your installed version of Erlang ($2) is too new. Please install a less recent version [${ERLANG_FROM_VERSION},${ERLANG_TO_VERSION}]."
         Abort
       ${EndIf}
     ${EndIf}
