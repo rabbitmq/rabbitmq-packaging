@@ -4,6 +4,8 @@ Unicode false
 ; Use the "Modern" UI
 !include MUI2.nsh
 !include LogicLib.nsh
+!define STRFUNC_USECALLARTIFICIALFUNCTION
+!include StrFunc.nsh
 !include WinMessages.nsh
 !include FileFunc.nsh
 !include WordFunc.nsh
@@ -11,8 +13,8 @@ Unicode false
 
 !addplugindir plugins
 
-!define ERLANG_MIN_VERSION 11.1.4  ; https://www.erlang.org/patches/otp-23.2#erts-11.1.4
-!define ERLANG_MAX_VERSION         ; 13.1 https://www.erlang.org/patches/otp-25.0#erts-13.0
+!define ERLANG_MIN_VERSION 23.2  ; https://www.rabbitmq.com/which-erlang.html#compatibility-matrix
+!define ERLANG_MAX_VERSION
 
 !define env_hklm 'HKLM "SYSTEM\CurrentControlSet\Control\Session Manager\Environment"'
 !define uninstall "Software\Microsoft\Windows\CurrentVersion\Uninstall\RabbitMQ"
@@ -380,21 +382,24 @@ Function findErlang
     abort:
     Abort
   ${Else}
-    ${VersionCompare} $2 ${ERLANG_MIN_VERSION} $0
-    ${If} $0 = 2
+    ReadRegStr $0 HKLM "Software\Ericsson\Erlang\$2" ""
+
+    ${GetFileName} $0 $1
+    ${StrTok} $2 $1 "-" "1" "0"
+
+    ${VersionCompare} $2 ${ERLANG_MIN_VERSION} $3
+    ${If} $3 = 2
       MessageBox MB_OK|MB_ICONEXCLAMATION "Your installed version of Erlang ($2) is too old. Please install a more recent version [${ERLANG_MIN_VERSION},${ERLANG_MAX_VERSION})."
       Abort
     ${EndIf}
 
     ${If} "${ERLANG_MAX_VERSION}" != ""
-      ${VersionCompare} $2 "${ERLANG_MAX_VERSION}" $0
-      ${If} $0 <> 2
+      ${VersionCompare} $2 "${ERLANG_MAX_VERSION}" $3
+      ${If} $3 <> 2
         MessageBox MB_OK|MB_ICONEXCLAMATION "Your installed version of Erlang ($2) is too new. Please install a less recent version [${ERLANG_MIN_VERSION},${ERLANG_MAX_VERSION})."
         Abort
       ${EndIf}
     ${EndIf}
-
-    ReadRegStr $0 HKLM "Software\Ericsson\Erlang\$2" ""
 
     ; See https://nsis.sourceforge.io/Setting_Environment_Variables
     WriteRegExpandStr ${env_hklm} ERLANG_HOME $0
