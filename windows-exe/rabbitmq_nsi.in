@@ -107,7 +107,7 @@ Section "RabbitMQ Server (required)" Rabbit
   SetOutPath $RABBITMQ_PLUGINS_DIR
 
   ; Put plugins there
-  File "rabbitmq_server-%%VERSION%%\plugins\*"
+  File /r "rabbitmq_server-%%VERSION%%\plugins\*"
 
   ; Set output path to the user's data directory
   SetOutPath $RABBITMQ_BASE
