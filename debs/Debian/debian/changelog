@@ -1,3 +1,9 @@
+rabbitmq-server (3.10.7-1) unstable; urgency=low
+
+  * New Upstream Release.
+
+ -- RabbitMQ Team <info@rabbitmq.com>  Tue, 02 Aug 2022 08:19:03 +0000
+
 rabbitmq-server (3.10.6-1) unstable; urgency=low
 
   * New Upstream Release.
