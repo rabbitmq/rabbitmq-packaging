@@ -423,21 +423,22 @@ FunctionEnd
 
 Function FinishPage.Show
   StrCpy $FinishPage_Run_Enabled 1
-  ${GetParameters} $7
-  ClearErrors
-  ${GetOptions} $7 /NOSERVICERUN $0
-  ${IfNot} ${Errors}
-    Goto hide
-  ${EndIf}
   SectionGetFlags ${RabbitService} $R0
   IntOp $R0 $R0 & ${SF_SELECTED}
   ${If} $R0 <> ${SF_SELECTED}
     Goto hide
   ${EndIf}
+  ${GetParameters} $7
+  ClearErrors
+  ${GetOptions} $7 /NOSERVICERUN $0
+  ${IfNot} ${Errors}
+    Goto disable
+  ${EndIf}
   Return
 
 hide:
-  StrCpy $FinishPage_Run_Enabled 0
-  SendMessage $mui.FinishPage.Run ${BM_SETCHECK} ${BST_CHECKED} 0
   ShowWindow $mui.FinishPage.Run 0
+disable:
+  StrCpy $FinishPage_Run_Enabled 0
+  SendMessage $mui.FinishPage.Run ${BM_SETCHECK} ${BST_UNCHECKED} 0
 FunctionEnd
