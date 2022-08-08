@@ -1,7 +1,11 @@
+Unicode false
+
 ; vim:ft=nsis:
 ; Use the "Modern" UI
 !include MUI2.nsh
 !include LogicLib.nsh
+!define STRFUNC_USECALLARTIFICIALFUNCTION
+!include StrFunc.nsh
 !include WinMessages.nsh
 !include FileFunc.nsh
 !include WordFunc.nsh
@@ -9,9 +13,16 @@
 
 !addplugindir plugins
 
+!define ERLANG_MIN_VERSION 23.2  ; https://www.rabbitmq.com/which-erlang.html#compatibility-matrix
+!define ERLANG_MAX_VERSION
+
 !define env_hklm 'HKLM "SYSTEM\CurrentControlSet\Control\Session Manager\Environment"'
 !define uninstall "Software\Microsoft\Windows\CurrentVersion\Uninstall\RabbitMQ"
+!define MUI_COMPONENTSPAGE_SMALLDESC
 !define MUI_FINISHPAGE_NOAUTOCLOSE
+!define MUI_FINISHPAGE_RUN
+!define MUI_FINISHPAGE_RUN_TEXT "Start RabbitMQ service"
+!define MUI_FINISHPAGE_RUN_FUNCTION FinishPage.Run
 !define MUI_UNFINISHPAGE_NOAUTOCLOSE
 
 ;--------------------------------
@@ -48,6 +59,7 @@ SetCompressor /solid lzma
   !insertmacro MUI_PAGE_COMPONENTS
   !insertmacro MUI_PAGE_DIRECTORY
   !insertmacro MUI_PAGE_INSTFILES
+  !define MUI_PAGE_CUSTOMFUNCTION_SHOW FinishPage.Show
   !insertmacro MUI_PAGE_FINISH
 
   !insertmacro MUI_UNPAGE_CONFIRM
@@ -72,6 +84,13 @@ VIAddVersionKey /LANG=${LANG_ENGLISH} "LegalCopyright" "Copyright (c) 2007-2022 
 VIAddVersionKey /LANG=${LANG_ENGLISH} "FileDescription" "RabbitMQ Server"
 VIAddVersionKey /LANG=${LANG_ENGLISH} "FileVersion" "%%VERSION%%"
 
+var RABBITMQ_BASE
+var RABBITMQ_LOG_BASE
+var RABBITMQ_MNESIA_BASE
+var RABBITMQ_PLUGINS_DIR
+
+var FinishPage_Run_Enabled
+
 ; The stuff to install
 Section "RabbitMQ Server (required)" Rabbit
 
@@ -81,22 +100,28 @@ Section "RabbitMQ Server (required)" Rabbit
   SetOutPath $INSTDIR
 
   ; Put files there
-  File /r "rabbitmq_server-%%VERSION%%"
+  File /r /x "plugins" "rabbitmq_server-%%VERSION%%"
   File "rabbitmq.ico"
 
+  ; Set output path to the RABBITMQ_PLUGINS_DIR
+  SetOutPath $RABBITMQ_PLUGINS_DIR
+
+  ; Put plugins there
+  File /r "rabbitmq_server-%%VERSION%%\plugins\*"
+
   ; Set output path to the user's data directory
-  SetOutPath $APPDATA\RabbitMQ
+  SetOutPath $RABBITMQ_BASE
 
   IfFileExists advanced.config 0 +2
     Goto config_written
   IfFileExists rabbitmq.config 0 +3
     Rename rabbitmq.config advanced.config
-  Goto config_written
-    ClearErrors
-    FileOpen $0 advanced.config w
-    IfErrors config_written
-    FileWrite $0 "[]."
-    FileClose $0
+    Goto config_written
+  ClearErrors
+  FileOpen $0 advanced.config w
+  IfErrors config_written
+  FileWrite $0 "[]."
+  FileClose $0
   config_written:
 
   ; Write the installation path into the registry
@@ -147,8 +172,11 @@ SectionEnd
 Section "RabbitMQ Service" RabbitService
   DetailPrint "Installing RabbitMQ service..."
   ExecDos::exec /DETAILED '"$INSTDIR\rabbitmq_server-%%VERSION%%\sbin\rabbitmq-service.bat" install' ""
-  DetailPrint "Starting RabbitMQ service..."
-  ExecDos::exec /DETAILED '"$INSTDIR\rabbitmq_server-%%VERSION%%\sbin\rabbitmq-service.bat" start' ""
+  Pop $0 # return value
+  ${If} $0 <> 0
+    MessageBox MB_OK "rabbitmq-service.bat install exited with code $0."
+    Abort
+  ${EndIf}
   ReadEnvStr $1 "HOMEDRIVE"
   ReadEnvStr $2 "HOMEPATH"
   Delete "$1$2\.erlang.cookie"
@@ -169,17 +197,17 @@ SectionEnd
 
 ;--------------------------------
 
-Section "Start Menu" RabbitStartMenu
+Section "Start Menu Shortcuts" RabbitStartMenu
   ; In case the service is not installed, or the service installation fails,
   ; make sure these exist or Explorer will get confused.
-  CreateDirectory "$APPDATA\RabbitMQ\log"
-  CreateDirectory "$APPDATA\RabbitMQ\db"
+  CreateDirectory "$RABBITMQ_LOG_BASE"
+  CreateDirectory "$RABBITMQ_MNESIA_BASE"
 
   CreateDirectory "$SMPROGRAMS\RabbitMQ Server"
   CreateShortCut "$SMPROGRAMS\RabbitMQ Server\Uninstall RabbitMQ.lnk" "$INSTDIR\uninstall.exe" "" "$INSTDIR\uninstall.exe" 0
-  CreateShortCut "$SMPROGRAMS\RabbitMQ Server\RabbitMQ Plugins.lnk" "$INSTDIR\rabbitmq_server-%%VERSION%%\plugins"
-  CreateShortCut "$SMPROGRAMS\RabbitMQ Server\RabbitMQ Logs.lnk" "$APPDATA\RabbitMQ\log"
-  CreateShortCut "$SMPROGRAMS\RabbitMQ Server\RabbitMQ Database Directory.lnk" "$APPDATA\RabbitMQ\db"
+  CreateShortCut "$SMPROGRAMS\RabbitMQ Server\RabbitMQ Plugins.lnk" "$RABBITMQ_PLUGINS_DIR"
+  CreateShortCut "$SMPROGRAMS\RabbitMQ Server\RabbitMQ Logs.lnk" "$RABBITMQ_LOG_BASE"
+  CreateShortCut "$SMPROGRAMS\RabbitMQ Server\RabbitMQ Database Directory.lnk" "$RABBITMQ_MNESIA_BASE"
 
   CreateShortCut "$SMPROGRAMS\RabbitMQ Server\RabbitMQ Service - (re)install.lnk" "%comspec%" '/k "$INSTDIR\rabbitmq_server-%%VERSION%%\sbin\rabbitmq-service.bat" install & if not errorlevel 1 exit /b 0' "$INSTDIR\rabbitmq.ico"
   ShellLink::SetRunAsAdministrator "$SMPROGRAMS\RabbitMQ Server\RabbitMQ Service - (re)install.lnk"
@@ -259,6 +287,26 @@ Function .onInit
     ${EndIf}
   ${EndIf}
 
+  ReadEnvStr $RABBITMQ_BASE "RABBITMQ_BASE"
+  ${If} ${Errors}
+    StrCpy $RABBITMQ_BASE "$APPDATA\RabbitMQ"
+  ${EndIf}
+
+  ReadEnvStr $RABBITMQ_LOG_BASE "RABBITMQ_LOG_BASE"
+  ${If} ${Errors}
+    StrCpy $RABBITMQ_LOG_BASE "$RABBITMQ_BASE\log"
+  ${EndIf}
+
+  ReadEnvStr $RABBITMQ_MNESIA_BASE "RABBITMQ_MNESIA_BASE"
+  ${If} ${Errors}
+    StrCpy $RABBITMQ_MNESIA_BASE "$RABBITMQ_BASE\db"
+  ${EndIf}
+
+  ReadEnvStr $RABBITMQ_PLUGINS_DIR "RABBITMQ_PLUGINS_DIR"
+  ${If} ${Errors}
+    StrCpy $RABBITMQ_PLUGINS_DIR "$INSTDIR\rabbitmq_server-%%VERSION%%\plugins"
+  ${EndIf}
+
   Call findErlang
 
   ReadRegStr $0 HKLM ${uninstall} "UninstallString"
@@ -278,6 +326,37 @@ Function .onInit
     ; called again since this is an update
     Call findErlang
 
+  ${EndIf}
+
+  ; disable RabbitService section if command line has /NOSERVICEINSTALL flag
+  ${GetParameters} $7
+  ClearErrors
+  ${GetOptions} $7 /NOSERVICEINSTALL $0
+  ${IfNot} ${Errors}
+    SectionGetFlags ${RabbitService} $0
+    IntOp $0 $0 | ${SF_SELECTED}
+    IntOp $0 $0 ^ ${SF_SELECTED}
+    SectionSetFlags ${RabbitService} $0
+  ${EndIf}
+
+  ; disable RabbitStartMenu section if command line has /NOSTARTMENU flag
+  ${GetParameters} $7
+  ClearErrors
+  ${GetOptions} $7 /NOSTARTMENU $0
+  ${IfNot} ${Errors}
+    SectionGetFlags ${RabbitStartMenu} $0
+    IntOp $0 $0 | ${SF_SELECTED}
+    IntOp $0 $0 ^ ${SF_SELECTED}
+    SectionSetFlags ${RabbitStartMenu} $0
+  ${EndIf}
+FunctionEnd
+
+Function .onInstSuccess
+  ${If} ${Silent}
+    Call FinishPage.Show
+    ${If} $FinishPage_Run_Enabled <> 0
+      Call FinishPage.Run
+    ${EndIf}
   ${EndIf}
 FunctionEnd
 
@@ -303,14 +382,24 @@ Function findErlang
     abort:
     Abort
   ${Else}
-    ${VersionCompare} $2 "8.3" $0
+    ReadRegStr $0 HKLM "Software\Ericsson\Erlang\$2" ""
 
-    ${If} $0 = 2
-      MessageBox MB_OK|MB_ICONEXCLAMATION "Your installed version of Erlang ($2) is too old. Please install a more recent version."
+    ${GetFileName} $0 $1
+    ${StrTok} $2 $1 "-" "1" "0"
+
+    ${VersionCompare} $2 ${ERLANG_MIN_VERSION} $3
+    ${If} $3 = 2
+      MessageBox MB_OK|MB_ICONEXCLAMATION "Your installed version of Erlang ($2) is too old. Please install a more recent version [${ERLANG_MIN_VERSION},${ERLANG_MAX_VERSION})."
       Abort
     ${EndIf}
 
-    ReadRegStr $0 HKLM "Software\Ericsson\Erlang\$2" ""
+    ${If} "${ERLANG_MAX_VERSION}" != ""
+      ${VersionCompare} $2 "${ERLANG_MAX_VERSION}" $3
+      ${If} $3 <> 2
+        MessageBox MB_OK|MB_ICONEXCLAMATION "Your installed version of Erlang ($2) is too new. Please install a less recent version [${ERLANG_MIN_VERSION},${ERLANG_MAX_VERSION})."
+        Abort
+      ${EndIf}
+    ${EndIf}
 
     ; See https://nsis.sourceforge.io/Setting_Environment_Variables
     WriteRegExpandStr ${env_hklm} ERLANG_HOME $0
@@ -321,4 +410,35 @@ Function findErlang
     System::Call 'Kernel32::SetEnvironmentVariableA(t, t) i("ERLANG_HOME", "$0").r0'
   ${EndIf}
 
+FunctionEnd
+
+Function FinishPage.Run
+  ExecDos::exec '"$INSTDIR\rabbitmq_server-%%VERSION%%\sbin\rabbitmq-service.bat" start' ""
+  Pop $0 # return value
+  ${If} $0 <> 0
+    MessageBox MB_OK "rabbitmq-service.bat start exited with code $0."
+    Abort
+  ${EndIf}
+FunctionEnd
+
+Function FinishPage.Show
+  StrCpy $FinishPage_Run_Enabled 1
+  SectionGetFlags ${RabbitService} $R0
+  IntOp $R0 $R0 & ${SF_SELECTED}
+  ${If} $R0 <> ${SF_SELECTED}
+    Goto hide
+  ${EndIf}
+  ${GetParameters} $7
+  ClearErrors
+  ${GetOptions} $7 /NOSERVICERUN $0
+  ${IfNot} ${Errors}
+    Goto disable
+  ${EndIf}
+  Return
+
+hide:
+  ShowWindow $mui.FinishPage.Run 0
+disable:
+  StrCpy $FinishPage_Run_Enabled 0
+  SendMessage $mui.FinishPage.Run ${BM_SETCHECK} ${BST_UNCHECKED} 0
 FunctionEnd
