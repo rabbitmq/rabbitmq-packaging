@@ -13,7 +13,7 @@ Unicode false
 
 !addplugindir plugins
 
-!define ERLANG_MIN_VERSION 23.2  ; https://www.rabbitmq.com/which-erlang.html#compatibility-matrix
+!define ERLANG_MIN_VERSION 24.2  ; https://www.rabbitmq.com/which-erlang.html#compatibility-matrix
 !define ERLANG_MAX_VERSION
 
 !define env_hklm 'HKLM "SYSTEM\CurrentControlSet\Control\Session Manager\Environment"'
