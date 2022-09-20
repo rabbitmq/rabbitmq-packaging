@@ -360,6 +360,45 @@ Function .onInstSuccess
   ${EndIf}
 FunctionEnd
 
+; Trim
+;   Removes leading & trailing whitespace from a string
+; Usage:
+;   Push
+;   Call Trim
+;   Pop
+Function Trim
+  Exch $R1 ; Original string
+  Push $R2
+
+  Loop:
+  StrCpy $R2 "$R1" 1
+  StrCmp "$R2" " " TrimLeft
+  StrCmp "$R2" "$\r" TrimLeft
+  StrCmp "$R2" "$\n" TrimLeft
+  StrCmp "$R2" "$\t" TrimLeft
+  GoTo Loop2
+
+  TrimLeft:
+  StrCpy $R1 "$R1" "" 1
+  Goto Loop
+
+  Loop2:
+  StrCpy $R2 "$R1" 1 -1
+  StrCmp "$R2" " " TrimRight
+  StrCmp "$R2" "$\r" TrimRight
+  StrCmp "$R2" "$\n" TrimRight
+  StrCmp "$R2" "$\t" TrimRight
+  GoTo Done
+
+  TrimRight:
+  StrCpy $R1 "$R1" -1
+  Goto Loop2
+
+  Done:
+  Pop $R2
+  Exch $R1
+FunctionEnd
+
 Function findErlang
 
   StrCpy $0 0
@@ -382,21 +421,51 @@ Function findErlang
     abort:
     Abort
   ${Else}
-    ReadRegStr $0 HKLM "Software\Ericsson\Erlang\$2" ""
+    Var /GLOBAL erlang_otp_dir
+    Var /GLOBAL erlang_otp_version_file
+    Var /GLOBAL erlang_otp_version
 
-    ${GetFileName} $0 $1
-    ${StrTok} $2 $1 "-" "1" "0"
+    ReadRegStr $erlang_otp_dir HKLM "Software\Ericsson\Erlang\$2" ""
+    DetailPrint "Erlang/OTP install found in $erlang_otp_dir"
 
-    ${VersionCompare} $2 ${ERLANG_MIN_VERSION} $3
+    FindFirst $0 $1 $erlang_otp_dir\releases\*.*
+    loop:
+      StrCmp $1 "" done
+      StrCpy $erlang_otp_version $1
+      FindNext $0 $1
+      Goto loop
+    done:
+    FindClose $0
+
+    StrCpy $erlang_otp_version_file $erlang_otp_dir\releases\$erlang_otp_version\OTP_VERSION
+    DetailPrint "Looking for Erlang/OTP version in file $erlang_otp_version_file"
+
+    ClearErrors
+    FileOpen $1 $erlang_otp_version_file r
+    IfErrors otp_version_error compare_otp_versions
+
+    otp_version_error:
+    MessageBox MB_OK|MB_ICONEXCLAMATION "Failed to read the version of Erlang/OTP from file $erlang_otp_version_file"
+    Abort
+
+    compare_otp_versions:
+    FileRead $1 $erlang_otp_version
+    FileClose $1
+    Push $erlang_otp_version
+    Call Trim
+    Pop $erlang_otp_version
+    DetailPrint "Found Erlang/OTP version $erlang_otp_version"
+
+    ${VersionCompare} $erlang_otp_version ${ERLANG_MIN_VERSION} $3
     ${If} $3 = 2
-      MessageBox MB_OK|MB_ICONEXCLAMATION "Your installed version of Erlang ($2) is too old. Please install a more recent version [${ERLANG_MIN_VERSION},${ERLANG_MAX_VERSION})."
+      MessageBox MB_OK|MB_ICONEXCLAMATION "Your installed version of Erlang ($erlang_otp_version) is too old. Please install a more recent version [${ERLANG_MIN_VERSION},${ERLANG_MAX_VERSION})."
       Abort
     ${EndIf}
 
     ${If} "${ERLANG_MAX_VERSION}" != ""
-      ${VersionCompare} $2 "${ERLANG_MAX_VERSION}" $3
+      ${VersionCompare} $erlang_otp_version "${ERLANG_MAX_VERSION}" $3
       ${If} $3 <> 2
-        MessageBox MB_OK|MB_ICONEXCLAMATION "Your installed version of Erlang ($2) is too new. Please install a less recent version [${ERLANG_MIN_VERSION},${ERLANG_MAX_VERSION})."
+        MessageBox MB_OK|MB_ICONEXCLAMATION "Your installed version of Erlang ($erlang_otp_version) is too new. Please install a less recent version [${ERLANG_MIN_VERSION},${ERLANG_MAX_VERSION})."
         Abort
       ${EndIf}
     ${EndIf}
