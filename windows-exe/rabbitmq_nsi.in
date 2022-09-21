@@ -471,12 +471,12 @@ Function findErlang
     ${EndIf}
 
     ; See https://nsis.sourceforge.io/Setting_Environment_Variables
-    WriteRegExpandStr ${env_hklm} ERLANG_HOME $0
+    WriteRegExpandStr ${env_hklm} ERLANG_HOME $erlang_otp_dir
     SendMessage ${HWND_BROADCAST} ${WM_WININICHANGE} 0 "STR:Environment" /TIMEOUT=5000
 
     ; On Windows XP changing the permanent environment does not change *our*
     ; environment, so do that as well.
-    System::Call 'Kernel32::SetEnvironmentVariableA(t, t) i("ERLANG_HOME", "$0").r0'
+    System::Call 'Kernel32::SetEnvironmentVariableA(t, t) i("ERLANG_HOME", "$erlang_otp_dir").r0'
   ${EndIf}
 
 FunctionEnd
