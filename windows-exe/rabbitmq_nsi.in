@@ -103,6 +103,11 @@ Section "RabbitMQ Server (required)" Rabbit
   File /r /x "plugins" "rabbitmq_server-%%VERSION%%"
   File "rabbitmq.ico"
 
+  ReadEnvStr $RABBITMQ_PLUGINS_DIR "RABBITMQ_PLUGINS_DIR"
+  ${If} ${Errors}
+    StrCpy $RABBITMQ_PLUGINS_DIR "$INSTDIR\rabbitmq_server-%%VERSION%%\plugins"
+  ${EndIf}
+
   ; Set output path to the RABBITMQ_PLUGINS_DIR
   SetOutPath $RABBITMQ_PLUGINS_DIR
 
@@ -300,11 +305,6 @@ Function .onInit
   ReadEnvStr $RABBITMQ_MNESIA_BASE "RABBITMQ_MNESIA_BASE"
   ${If} ${Errors}
     StrCpy $RABBITMQ_MNESIA_BASE "$RABBITMQ_BASE\db"
-  ${EndIf}
-
-  ReadEnvStr $RABBITMQ_PLUGINS_DIR "RABBITMQ_PLUGINS_DIR"
-  ${If} ${Errors}
-    StrCpy $RABBITMQ_PLUGINS_DIR "$INSTDIR\rabbitmq_server-%%VERSION%%\plugins"
   ${EndIf}
 
   Call findErlang
