@@ -245,6 +245,9 @@ systemctl try-restart %{name}.service >/dev/null 2>&1 || :
 rm -rf %{buildroot}
 
 %changelog
+* Mon Jan 30 2023 info@rabbitmq.com 3.11.8-1
+- New upstream release.
+
 * Tue Jan 17 2023 info@rabbitmq.com 3.11.7-1
 - New upstream release.
 
