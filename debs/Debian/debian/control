@@ -52,6 +52,6 @@ Depends: init-system-helpers (>= 1.13~),
  erlang-xmerl (>= 1:25.0) | esl-erlang (>= 1:25.0),
  adduser,
  logrotate
-Description: Multi-protocol messaging broker
- RabbitMQ is an open source multi-protocol messaging broker.
+Description: Multi-protocol messaging and streaming broker
+ RabbitMQ is an open source multi-protocol messaging and streaming broker.
 Homepage: https://www.rabbitmq.com/
