@@ -17,7 +17,7 @@ BuildRequires: erlang >= %{erlang_minver}
 BuildRequires: elixir
 BuildRequires: gzip, sed, zip, rsync
 
-%if 0%{?fedora} || 0%{?rhel} >= 7 || 0%{?suse_version} >= 1315
+%if 0%{?fedora} || 0%{?rhel} >= 8 || 0%{?suse_version} >= 1315
 BuildRequires:  systemd
 %endif
 
@@ -26,7 +26,7 @@ Requires: logrotate
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-%{_arch}-root
 Summary: The RabbitMQ server
 
-%if 0%{?fedora} || 0%{?rhel} >= 7 || 0%{?suse_version} >= 1315
+%if 0%{?fedora} || 0%{?rhel} >= 8 || 0%{?suse_version} >= 1315
 Requires(pre): systemd
 Requires(post): systemd
 Requires(preun): systemd
@@ -36,7 +36,7 @@ Requires(pre): %%REQUIRES%%
 %endif
 
 %description
-RabbitMQ is an open source multi-protocol messaging broker.
+RabbitMQ is an open source multi-protocol messaging and streaming broker.
 
 # We want to install into /usr/lib, even on 64-bit platforms
 %define _rabbit_libdir %{_exec_prefix}/lib/rabbitmq
@@ -67,7 +67,7 @@ mkdir -p %{buildroot}%{_localstatedir}/log/rabbitmq
 
 #Copy all necessary lib files etc.
 
-%if 0%{?fedora} || 0%{?rhel} >= 7 || 0%{?suse_version} >= 1315
+%if 0%{?fedora} || 0%{?rhel} >= 8 || 0%{?suse_version} >= 1315
 install -p -D -m 0644 %{S:3} %{buildroot}%{_unitdir}/%{name}.service
 %else
 install -p -D -m 0755 %{S:1} %{buildroot}%{_initrddir}/rabbitmq-server
@@ -92,7 +92,7 @@ for script in rabbitmq-server rabbitmq-plugins rabbitmq-diagnostics rabbitmq-que
 	 %{buildroot}%{_sbindir}/$script; \
 done
 
-%if 0%{?fedora} > 14 || 0%{?rhel} >= 7 || 0%{?suse_version} >= 1315
+%if 0%{?fedora} > 30 || 0%{?rhel} >= 8 || 0%{?suse_version} >= 1315
 install -D -p -m 0644 %{SOURCE4} %{buildroot}%{_prefix}/lib/tmpfiles.d/%{name}.conf
 %endif
 
@@ -124,7 +124,7 @@ if [ "$1" = 2 ]; then
     rm -f %{_localstatedir}/lib/rabbitmq/rabbitmq-running-before-upgrade
   fi
 
-%if 0%{?fedora} || 0%{?rhel} >= 7 || 0%{?suse_version} >= 1315
+%if 0%{?fedora} || 0%{?rhel} >= 8 || 0%{?suse_version} >= 1315
   systemctl stop rabbitmq-server
 %else
   /sbin/service rabbitmq-server stop
@@ -144,7 +144,7 @@ fi
 
 %post
 
-%if 0%{?fedora} || 0%{?rhel} >= 7 || 0%{?suse_version} >= 1315
+%if 0%{?fedora} || 0%{?rhel} >= 8 || 0%{?suse_version} >= 1315
 # %%systemd_post %%{name}.service
 # manual expansion of systemd_post as this doesn't appear to
 # expand correctly on debian machines
@@ -171,7 +171,7 @@ if [ "$1" = 2 ] ; then
   # Upgrade:
   # Restart the service if it was running before the upgrade.
   if [ -f %{_localstatedir}/lib/rabbitmq/rabbitmq-running-before-upgrade ]; then
-%if 0%{?fedora} || 0%{?rhel} >= 7 || 0%{?suse_version} >= 1315
+%if 0%{?fedora} || 0%{?rhel} >= 8 || 0%{?suse_version} >= 1315
     # %%systemd_postun_with_restart %%{name}.service
     # manual expansion of systemd_postun_with_restart as this doesn't appear to
     # expand correctly on debian machines
@@ -193,7 +193,7 @@ fi
 
 if [ $1 = 0 ]; then
   #Complete uninstall
-%if 0%{?fedora} || 0%{?rhel} >= 7 || 0%{?suse_version} >= 1315
+%if 0%{?fedora} || 0%{?rhel} >= 8 || 0%{?suse_version} >= 1315
   systemctl stop rabbitmq-server
 %else
   /sbin/service rabbitmq-server stop
@@ -211,20 +211,6 @@ for ext in rel script boot ; do
 done
 
 %postun
-
-%if 0%{?fedora} > 17 || 0%{?rhel} >= 7 || 0%{?suse_version} >= 1315
-# For prior versions older than this, do a conversion
-# from sysv to systemd
-%triggerun -- %{name} < 3.6.5
-# Save the current service runlevel info
-# User must manually run systemd-sysv-convert --apply opensips
-# to migrate them to systemd targets
-systemd-sysv-convert --save %{name} >/dev/null 2>&1 ||:
-
-# Run these because the SysV package being removed won't do them
-/sbin/chkconfig --del %{name} >/dev/null 2>&1 || :
-systemctl try-restart %{name}.service >/dev/null 2>&1 || :
-%endif
 
 %files -f ../%{name}.files
 %defattr(-,root,root,-)
