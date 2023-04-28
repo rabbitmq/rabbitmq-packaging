@@ -8,17 +8,24 @@ DEB_DESTDIR = debian/rabbitmq-server
 RABBITMQ_USER ?= rabbitmq
 RABBITMQ_GROUP ?= rabbitmq
 
+BCR = $(CURDIR)/bcr
+REPO_CACHE = $(CURDIR)/repo-cache
+
 unexport DEPS_DIR
 
 %:
 	dh $@ --parallel --with systemd
 
 override_dh_auto_clean:
-	$(MAKE) clean clean-unpacked-source-dist distclean-manpages
-	rm -rf .erlang.mk
+	cd rabbitmq-server-*
+	bazel clean --expunge
 
 override_dh_auto_build:
-	$(MAKE) dist manpages
+	cd rabbitmq-server-*
+	bazel build :package-generic-unix \
+		--registry=file://$(BCR) \
+		--repository_cache=$(REPO_CACHE) \
+		--verbose_failures
 
 override_dh_auto_test:
 	@:
