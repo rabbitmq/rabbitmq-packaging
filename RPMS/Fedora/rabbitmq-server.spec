@@ -1,6 +1,6 @@
 %define debug_package %{nil}
 %define erlang_minver 24.3.2
-%define erlang_maxver 25.3
+%define erlang_maxver 26.0
 
 Name: rabbitmq-server
 Version: %%VERSION%%
@@ -22,7 +22,7 @@ BuildRequires: gzip, sed, zip, rsync
 BuildRequires:  systemd
 %endif
 
-Requires: erlang >= %{erlang_minver}, erlang <= %{erlang_maxver},
+Requires: erlang >= %{erlang_minver}, erlang < %{erlang_maxver},
 Requires: logrotate
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-%{_arch}-root
 Summary: The RabbitMQ server
