@@ -232,6 +232,9 @@ done
 rm -rf %{buildroot}
 
 %changelog
+* Mon May 29 2023 info@rabbitmq.com 3.11.17-1
+- New upstream release.
+
 * Sat May 13 2023 info@rabbitmq.com 3.11.16-1
 - New upstream release.
 
