@@ -1,8 +1,8 @@
 Source: rabbitmq-server
 Section: net
 Priority: extra
-Maintainer: RabbitMQ Team <info@rabbitmq.com>
-Uploaders: Michael Klishin <michael@rabbitmq.com>,
+Maintainer: RabbitMQ Team <rabbitmq-core@groups.vmware.com>
+Uploaders: Michael Klishin <michael@clojurewerkz.org>,
  Karl Nilsson <knilsson@rabbitmq.com>,
  Jean-Sébastien Pédron <jean-sebastien@rabbitmq.com>
 Build-Depends: debhelper (>= 9),
