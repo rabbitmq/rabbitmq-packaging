@@ -28,7 +28,7 @@ if "$SCRIPTS_DIR/parse-changelog.sh" "$SPEC" | \
 fi
 
 CHANGELOG_PKG_REV=1
-CHANGELOG_EMAIL='info@rabbitmq.com'
+CHANGELOG_EMAIL='rabbitmq-core@groups.vmware.com'
 CHANGELOG_COMMENT='New upstream release.'
 
 awk "
