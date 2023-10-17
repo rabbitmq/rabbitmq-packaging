@@ -232,6 +232,9 @@ done
 rm -rf %{buildroot}
 
 %changelog
+* Tue Oct 17 2023 rabbitmq-core@groups.vmware.com 3.11.24-1
+- New upstream release.
+
 * Mon Sep 11 2023 rabbitmq-core@groups.vmware.com 3.11.23-1
 - New upstream release.
 
