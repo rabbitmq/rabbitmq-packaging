@@ -1,3 +1,9 @@
+rabbitmq-server (3.12.7-1) unstable; urgency=low
+
+  * New Upstream Release.
+
+ -- RabbitMQ Team <rabbitmq-core@groups.vmware.com>  Tue, 17 Oct 2023 21:11:05 +0000
+
 rabbitmq-server (3.12.6-1) unstable; urgency=low
 
   * New Upstream Release.
