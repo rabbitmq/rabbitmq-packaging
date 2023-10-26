@@ -1,5 +1,5 @@
 %define debug_package %{nil}
-%define erlang_minver 25.0
+%define erlang_minver 26.0
 %define erlang_maxver 27.0
 
 Name: rabbitmq-server
