@@ -1,3 +1,9 @@
+rabbitmq-server (3.13.0~rc.5-1) unstable; urgency=low
+
+  * New Upstream Release.
+
+ -- RabbitMQ Team <rabbitmq-core@groups.vmware.com>  Wed, 14 Feb 2024 02:28:46 +0000
+
 rabbitmq-server (3.13.0~rc.4-1) unstable; urgency=low
 
   * New Upstream Release.
