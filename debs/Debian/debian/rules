@@ -11,7 +11,7 @@ RABBITMQ_GROUP ?= rabbitmq
 unexport DEPS_DIR
 
 %:
-	dh $@ --parallel --with systemd
+	dh $@ --parallel
 
 override_dh_auto_clean:
 	$(MAKE) clean clean-unpacked-source-dist distclean-manpages
