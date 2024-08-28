@@ -251,6 +251,8 @@ LangString DESC_RabbitStartMenu ${LANG_ENGLISH} "Add some useful links to the st
 
 ; Uninstaller
 
+!uninstfinalize './sign-uninstall.sh "%1"'
+
 Section "Uninstall"
 
   ; Remove registry keys
