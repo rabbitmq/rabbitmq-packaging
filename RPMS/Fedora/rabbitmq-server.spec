@@ -232,6 +232,9 @@ done
 rm -rf %{buildroot}
 
 %changelog
+* Fri Oct 25 2024 rabbitmq-core@groups.vmware.com 4.0.3~beta.1-1
+- New upstream release.
+
 * Fri Oct 25 2024 rabbitmq-core@groups.vmware.com 4.0.3~rc.1-1
 - New upstream release.
 
