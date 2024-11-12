@@ -24,7 +24,7 @@ DAEMON=/usr/sbin/${NAME}
 CONTROL=/usr/sbin/rabbitmqctl
 DESC=rabbitmq-server
 USER=rabbitmq
-PID_FILE=/var/run/rabbitmq/pid
+PID_FILE=/run/rabbitmq/pid
 RABBITMQ_STARTUP_TIMEOUT=600
 
 START_PROG= # Set when building package
