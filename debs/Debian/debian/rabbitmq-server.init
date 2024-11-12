@@ -22,7 +22,7 @@ DAEMON=/usr/sbin/${NAME}
 CONTROL=/usr/sbin/rabbitmqctl
 DESC="message broker"
 USER=rabbitmq
-PID_FILE=/var/run/rabbitmq/pid
+PID_FILE=/run/rabbitmq/pid
 RABBITMQ_STARTUP_TIMEOUT=600
 
 test -x $DAEMON || exit 0
