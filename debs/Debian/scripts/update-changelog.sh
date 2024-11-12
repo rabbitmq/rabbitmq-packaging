@@ -22,7 +22,7 @@ ${PACKAGE_NAME} (${PACKAGE_VERSION}-1) unstable; urgency=low
 
   * New Upstream Release.
 
- -- RabbitMQ Team <rabbitmq-core@groups.vmware.com>  ${CHANGELOG_DATE}
+ -- RabbitMQ Team <teamrabbitmq@gmail.com>  ${CHANGELOG_DATE}
 
 EOF
 
