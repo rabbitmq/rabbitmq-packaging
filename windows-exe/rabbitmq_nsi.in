@@ -13,7 +13,7 @@ Unicode false
 
 !addplugindir plugins
 
-!define ERLANG_MIN_VERSION 26.0  ; https://www.rabbitmq.com/which-erlang.html#compatibility-matrix
+!define ERLANG_MIN_VERSION 26.0  ; https://www.rabbitmq.com/docs/which-erlang#compatibility-matrix
 !define ERLANG_MAX_VERSION
 
 !define env_hklm 'HKLM "SYSTEM\CurrentControlSet\Control\Session Manager\Environment"'
@@ -80,7 +80,7 @@ VIAddVersionKey /LANG=${LANG_ENGLISH} "ProductName" "RabbitMQ Server"
 ;VIAddVersionKey /LANG=${LANG_ENGLISH} "Comments" ""
 VIAddVersionKey /LANG=${LANG_ENGLISH} "CompanyName" "VMware, Inc."
 ;VIAddVersionKey /LANG=${LANG_ENGLISH} "LegalTrademarks" "" ; TODO ?
-VIAddVersionKey /LANG=${LANG_ENGLISH} "LegalCopyright" "Copyright (c) 2007-2022 VMware, Inc. or its affiliates.  All rights reserved."
+VIAddVersionKey /LANG=${LANG_ENGLISH} "LegalCopyright" "Copyright (c) 2007-2024 VMware, Inc. or its affiliates. All rights reserved."
 VIAddVersionKey /LANG=${LANG_ENGLISH} "FileDescription" "RabbitMQ Server"
 VIAddVersionKey /LANG=${LANG_ENGLISH} "FileVersion" "%%VERSION%%"
 
