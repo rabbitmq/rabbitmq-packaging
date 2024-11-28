@@ -36,8 +36,6 @@ Requires(post): %%REQUIRES%%
 Requires(pre): %%REQUIRES%%
 %endif
 
-%define _binaries_in_noarch_packages_terminate_build 0
-
 %description
 RabbitMQ is an open source multi-protocol messaging and streaming broker.
 
