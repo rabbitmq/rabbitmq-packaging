@@ -79,12 +79,6 @@ package-rpm-redhat: package-rpm-rhel6 package-rpm-rhel7 package-rpm-rhel8
 package-rpm-fedora: $(SOURCE_DIST_FILE)
 	$(gen_verbose) $(MAKE) -C RPMS/Fedora $(VARS) all $(DO_CLEAN)
 
-package-rpm-rhel6: $(SOURCE_DIST_FILE)
-	$(gen_verbose) $(MAKE) -C RPMS/Fedora $(VARS) RPM_OS=rhel6 all $(DO_CLEAN)
-
-package-rpm-rhel7: $(SOURCE_DIST_FILE)
-	$(gen_verbose) $(MAKE) -C RPMS/Fedora $(VARS) RPM_OS=rhel7 all $(DO_CLEAN)
-
 package-rpm-rhel8: $(SOURCE_DIST_FILE)
 	$(gen_verbose) $(MAKE) -C RPMS/Fedora $(VARS) RPM_OS=rhel8 all $(DO_CLEAN)
 
@@ -93,9 +87,6 @@ package-rpm-suse: package-rpm-opensuse package-rpm-sles11
 
 package-rpm-opensuse: $(SOURCE_DIST_FILE)
 	$(gen_verbose) $(MAKE) -C RPMS/Fedora $(VARS) RPM_OS=opensuse all $(DO_CLEAN)
-
-package-rpm-sles11: $(SOURCE_DIST_FILE)
-	$(gen_verbose) $(MAKE) -C RPMS/Fedora $(VARS) RPM_OS=sles11 all $(DO_CLEAN)
 
 package-windows: $(SOURCE_DIST_FILE)
 	$(gen_verbose) $(MAKE) -C windows $(VARS) all $(DO_CLEAN)
