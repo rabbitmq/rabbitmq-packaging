@@ -28,6 +28,7 @@ DEFINES = --define 'upstream_version $(VERSION)' \
 
 RPM_OS ?= fedora
 DO_SIGN ?= yes
+ARCH ?= noarch
 
 ifeq "$(RPM_OS)" "opensuse"
 FUNCTION_LIBRARY=
@@ -148,7 +149,7 @@ ifneq ($(SIGNING_KEY),)
 		--define '__gpg /usr/bin/gpg' \
 		--define '_gpg_path $(GNUPGHOME)' \
 		SRPMS/*-$(RPM_VERSION)*.rpm \
-		RPMS/noarch/*-$(RPM_VERSION)*.rpm \
+		RPMS/$(ARCH)/*-$(RPM_VERSION)*.rpm \
 		< /dev/null
 endif
 endif
@@ -156,7 +157,7 @@ endif
 # location.
 ifneq ($(PACKAGES_DIR),)
 	mkdir -p "$(PACKAGES_DIR)"
-	mv SRPMS/*-$(RPM_VERSION)*.rpm RPMS/noarch/*-$(RPM_VERSION)*.rpm \
+	mv SRPMS/*-$(RPM_VERSION)*.rpm RPMS/$(ARCH)/*-$(RPM_VERSION)*.rpm \
 		"$(PACKAGES_DIR)"
 endif
 
