@@ -1,5 +1,5 @@
 [Unit]
-Description=RabbitMQ broker
+Description=Open source RabbitMQ server
 After=syslog.target network.target
 
 [Service]
