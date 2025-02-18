@@ -1,6 +1,7 @@
 %define debug_package %{nil}
 %define erlang_minver 26.0
 %define erlang_maxver 28.0
+%define _build_arch noarch
 
 Name: rabbitmq-server
 Version: %%VERSION%%
@@ -13,7 +14,12 @@ Source2: rabbitmq-server.logrotate
 Source3: rabbitmq-server.service
 Source4: rabbitmq-server.tmpfiles
 URL: https://www.rabbitmq.com/
-BuildArch: noarch
+# _arch is a built-in value that is derived from the build system,
+# it is automatically populated and used in many contexts.
+# #
+# This separate variable is specifically for setting BuildArch,
+# and for open source RabbitMQ it should default to "noarch"
+BuildArch: %{_build_arch}
 BuildRequires: erlang >= %{erlang_minver}
 BuildRequires: elixir
 BuildRequires: gzip, sed, zip, rsync
