@@ -29,14 +29,7 @@ DEFINES = --define 'upstream_version $(VERSION)' \
 RPM_OS ?= fedora
 DO_SIGN ?= yes
 
-ifeq "$(RPM_OS)" "sles11"
-FUNCTION_LIBRARY=
-REQUIRES=/sbin/chkconfig /sbin/service
-OS_DEFINES=--define '_initrddir /etc/init.d' --define 'dist .sles11' --define 'suse_version 1012'
-SPEC_DEFINES=--define 'group_tag Productivity/Networking/Other'
-START_PROG=startproc
-DO_SIGN=no
-else ifeq "$(RPM_OS)" "opensuse"
+ifeq "$(RPM_OS)" "opensuse"
 FUNCTION_LIBRARY=
 REQUIRES=/sbin/chkconfig /sbin/service
 OS_DEFINES=--define '_unitdir /usr/lib/systemd/system' --define 'dist .suse' --define 'suse_version 1315'
@@ -46,10 +39,8 @@ else
 FUNCTION_LIBRARY=\# Source function library.\n. /etc/init.d/functions
 REQUIRES=chkconfig initscripts
 OS_DEFINES=--define '_initrddir /etc/rc.d/init.d'
-ifeq "$(RPM_OS)" "rhel6"
-SPEC_DEFINES=--define 'group_tag Development/Libraries' --define 'dist .el6' --define 'rhel 6'
-else ifeq "$(RPM_OS)" "rhel7"
-SPEC_DEFINES=--define 'group_tag Development/Libraries' --define '_unitdir /usr/lib/systemd/system' --define 'dist .el7' --define 'rhel 7'
+ifeq "$(RPM_OS)" "rhel9"
+SPEC_DEFINES=--define 'group_tag Development/Libraries' --define '_unitdir /usr/lib/systemd/system' --define 'dist .el9' --define 'rhel 9'
 else ifeq "$(RPM_OS)" "rhel8"
 SPEC_DEFINES=--define 'group_tag Development/Libraries' --define '_unitdir /usr/lib/systemd/system' --define 'dist .el8' --define 'rhel 8'
 else

@@ -73,16 +73,19 @@ package-rpm: package-rpm-redhat package-rpm-suse
 	@:
 
 # FIXME: Why not package-rpm-fedora?
-package-rpm-redhat: package-rpm-rhel6 package-rpm-rhel7 package-rpm-rhel8
+package-rpm-redhat: package-rpm-rhel8 package-rpm-rhel9
 	@:
 
 package-rpm-fedora: $(SOURCE_DIST_FILE)
 	$(gen_verbose) $(MAKE) -C RPMS/Fedora $(VARS) all $(DO_CLEAN)
 
+package-rpm-rhel9: $(SOURCE_DIST_FILE)
+	$(gen_verbose) $(MAKE) -C RPMS/Fedora $(VARS) RPM_OS=rhel9 all $(DO_CLEAN)
+
 package-rpm-rhel8: $(SOURCE_DIST_FILE)
 	$(gen_verbose) $(MAKE) -C RPMS/Fedora $(VARS) RPM_OS=rhel8 all $(DO_CLEAN)
 
-package-rpm-suse: package-rpm-opensuse package-rpm-sles11
+package-rpm-suse: package-rpm-opensuse
 	@:
 
 package-rpm-opensuse: $(SOURCE_DIST_FILE)
