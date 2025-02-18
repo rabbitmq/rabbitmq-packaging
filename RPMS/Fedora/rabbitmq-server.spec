@@ -25,7 +25,7 @@ BuildRequires:  systemd
 Requires: erlang >= %{erlang_minver}, erlang < %{erlang_maxver},
 Requires: logrotate
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-%{_arch}-root
-Summary: The RabbitMQ server
+Summary: Open source RabbitMQ server
 
 %if 0%{?fedora} || 0%{?rhel} >= 8 || 0%{?suse_version} >= 1315
 Requires(pre): systemd
