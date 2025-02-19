@@ -77,19 +77,19 @@ package-rpm-redhat: package-rpm-rhel8 package-rpm-rhel9
 	@:
 
 package-rpm-fedora: $(SOURCE_DIST_FILE)
-	$(gen_verbose) $(MAKE) -C RPMS/Fedora $(VARS) all $(DO_CLEAN)
+	$(gen_verbose) $(MAKE) -C RPMS/Fedora $(VARS) ARCH=noarch all $(DO_CLEAN)
 
 package-rpm-rhel9: $(SOURCE_DIST_FILE)
-	$(gen_verbose) $(MAKE) -C RPMS/Fedora $(VARS) RPM_OS=rhel9 all $(DO_CLEAN)
+	$(gen_verbose) $(MAKE) -C RPMS/Fedora $(VARS) RPM_OS=rhel9 ARCH=noarch all $(DO_CLEAN)
 
 package-rpm-rhel8: $(SOURCE_DIST_FILE)
-	$(gen_verbose) $(MAKE) -C RPMS/Fedora $(VARS) RPM_OS=rhel8 all $(DO_CLEAN)
+	$(gen_verbose) $(MAKE) -C RPMS/Fedora $(VARS) RPM_OS=rhel8 ARCH=noarch all $(DO_CLEAN)
 
 package-rpm-suse: package-rpm-opensuse
 	@:
 
 package-rpm-opensuse: $(SOURCE_DIST_FILE)
-	$(gen_verbose) $(MAKE) -C RPMS/Fedora $(VARS) RPM_OS=opensuse all $(DO_CLEAN)
+	$(gen_verbose) $(MAKE) -C RPMS/Fedora $(VARS) RPM_OS=opensuse ARCH=noarch all $(DO_CLEAN)
 
 package-windows: $(SOURCE_DIST_FILE)
 	$(gen_verbose) $(MAKE) -C windows $(VARS) all $(DO_CLEAN)
