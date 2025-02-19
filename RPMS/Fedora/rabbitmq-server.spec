@@ -228,9 +228,6 @@ done
 %doc README
 %doc deps/rabbit/docs/set_rabbitmq_policy.sh.example
 
-%clean
-rm -rf %{buildroot}
-
 %changelog
 * Wed Feb 14 2024 rabbitmq-core@groups.vmware.com 3.13.0~rc.5-1
 - New upstream release.
