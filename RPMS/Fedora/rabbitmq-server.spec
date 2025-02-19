@@ -228,9 +228,6 @@ done
 %doc README
 %doc deps/rabbit/docs/set_rabbitmq_policy.sh.example
 
-%clean
-rm -rf %{buildroot}
-
 %changelog
 * Thu Nov 21 2024 teamrabbitmq@gmail.com 4.0.4-1
 - New upstream release.
