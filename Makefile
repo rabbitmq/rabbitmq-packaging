@@ -36,8 +36,8 @@ all: package-deb package-rpm package-windows
 .PHONY: packages package-deb \
 	package-rpm \
 	package-rpm-redhat package-rpm-fedora \
-	package-rpm-rhel6 package-rpm-rhel7 package-rpm-rhel8 \
-	package-rpm-suse package-rpm-opensuse package-rpm-sles11 \
+	package-rpm-rhel8 package-rpm-rhel9 \
+	package-rpm-suse package-rpm-opensuse \
 	package-windows
 
 PACKAGES_DIR ?= ../PACKAGES
