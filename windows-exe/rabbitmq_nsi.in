@@ -179,7 +179,9 @@ Section "RabbitMQ Service" RabbitService
   ExecDos::exec /DETAILED '"$INSTDIR\rabbitmq_server-%%VERSION%%\sbin\rabbitmq-service.bat" install' ""
   Pop $0 # return value
   ${If} $0 <> 0
-    MessageBox MB_OK "rabbitmq-service.bat install exited with code $0."
+    ${IfNot} ${Silent}
+      MessageBox MB_OK "rabbitmq-service.bat install exited with code $0."
+    ${EndIf}
     Abort
   ${EndIf}
   ReadEnvStr $1 "HOMEDRIVE"
@@ -447,7 +449,9 @@ Function findErlang
     IfErrors otp_version_error compare_otp_versions
 
     otp_version_error:
-    MessageBox MB_OK|MB_ICONEXCLAMATION "Failed to read the version of Erlang/OTP from file $erlang_otp_version_file"
+    ${IfNot} ${Silent}
+      MessageBox MB_OK|MB_ICONEXCLAMATION "Failed to read the version of Erlang/OTP from file $erlang_otp_version_file"
+    ${EndIf}
     Abort
 
     compare_otp_versions:
@@ -460,14 +464,18 @@ Function findErlang
 
     ${VersionCompare} $erlang_otp_version ${ERLANG_MIN_VERSION} $3
     ${If} $3 = 2
-      MessageBox MB_OK|MB_ICONEXCLAMATION "Your installed version of Erlang ($erlang_otp_version) is too old. Please install a more recent version [${ERLANG_MIN_VERSION},${ERLANG_MAX_VERSION})."
+      ${IfNot} ${Silent}
+        MessageBox MB_OK|MB_ICONEXCLAMATION "Your installed version of Erlang ($erlang_otp_version) is too old. Please install a more recent version [${ERLANG_MIN_VERSION},${ERLANG_MAX_VERSION})."
+      ${EndIf}
       Abort
     ${EndIf}
 
     ${If} "${ERLANG_MAX_VERSION}" != ""
       ${VersionCompare} $erlang_otp_version "${ERLANG_MAX_VERSION}" $3
       ${If} $3 <> 2
-        MessageBox MB_OK|MB_ICONEXCLAMATION "Your installed version of Erlang ($erlang_otp_version) is too new. Please install a less recent version [${ERLANG_MIN_VERSION},${ERLANG_MAX_VERSION})."
+        ${IfNot} ${Silent}
+          MessageBox MB_OK|MB_ICONEXCLAMATION "Your installed version of Erlang ($erlang_otp_version) is too new. Please install a less recent version [${ERLANG_MIN_VERSION},${ERLANG_MAX_VERSION})."
+        ${EndIf}
         Abort
       ${EndIf}
     ${EndIf}
@@ -487,7 +495,9 @@ Function FinishPage.Run
   ExecDos::exec '"$INSTDIR\rabbitmq_server-%%VERSION%%\sbin\rabbitmq-service.bat" start' ""
   Pop $0 # return value
   ${If} $0 <> 0
-    MessageBox MB_OK "rabbitmq-service.bat start exited with code $0."
+    ${IfNot} ${Silent}
+      MessageBox MB_OK "rabbitmq-service.bat start exited with code $0."
+    ${EndIf}
     Abort
   ${EndIf}
 FunctionEnd
