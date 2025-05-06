@@ -315,10 +315,11 @@ Function .onInit
 
   ReadRegStr $0 HKLM ${uninstall} "UninstallString"
   ${If} $0 != ""
-    MessageBox MB_OKCANCEL|MB_ICONEXCLAMATION "RabbitMQ is already installed. $\n$\nClick 'OK' to remove the previous version or 'Cancel' to cancel this installation." /SD IDOK IDOK rununinstall IDCANCEL norun
-
-    norun:
-    Abort
+	${IfNot} ${Silent}
+		MessageBox MB_OKCANCEL|MB_ICONEXCLAMATION "RabbitMQ is already installed. $\n$\nClick 'OK' to remove the previous version or 'Cancel' to cancel this installation." /SD IDOK IDOK rununinstall IDCANCEL norun
+		norun:
+		Abort
+	${EndIf}
 
     rununinstall:
     ;Run the uninstaller
@@ -420,10 +421,12 @@ Function findErlang
   ${Loop}
 
   ${If} $2 = "not-found"
-    MessageBox MB_YESNO|MB_ICONEXCLAMATION "Erlang could not be detected.$\nYou must install Erlang before installing RabbitMQ. Would you like the installer to open a browser window to the Erlang download site?" IDNO abort
-    ExecShell "open" "https://www.erlang.org/downloads"
-    abort:
-    Abort
+   ${IfNot} ${Silent}
+		MessageBox MB_YESNO|MB_ICONEXCLAMATION "Erlang could not be detected.$\nYou must install Erlang before installing RabbitMQ. Would you like the installer to open a browser window to the Erlang download site?" IDNO abort
+		ExecShell "open" "https://www.erlang.org/downloads"
+	${EndIf}
+	abort:
+	Abort
   ${Else}
     Var /GLOBAL erlang_otp_dir
     Var /GLOBAL erlang_otp_version_file
