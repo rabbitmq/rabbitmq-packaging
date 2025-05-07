@@ -182,7 +182,8 @@ Section "RabbitMQ Service" RabbitService
     ${IfNot} ${Silent}
       MessageBox MB_OK "rabbitmq-service.bat install exited with code $0."
     ${EndIf}
-    Abort
+	SetErrorLevel 11
+	Abort
   ${EndIf}
   ReadEnvStr $1 "HOMEDRIVE"
   ReadEnvStr $2 "HOMEPATH"
@@ -426,6 +427,7 @@ Function findErlang
 		ExecShell "open" "https://www.erlang.org/downloads"
 	${EndIf}
 	abort:
+	SetErrorLevel 21
 	Abort
   ${Else}
     Var /GLOBAL erlang_otp_dir
@@ -455,7 +457,8 @@ Function findErlang
     ${IfNot} ${Silent}
       MessageBox MB_OK|MB_ICONEXCLAMATION "Failed to read the version of Erlang/OTP from file $erlang_otp_version_file"
     ${EndIf}
-    Abort
+	SetErrorLevel 22
+	Abort
 
     compare_otp_versions:
     FileRead $1 $erlang_otp_version
@@ -470,7 +473,8 @@ Function findErlang
       ${IfNot} ${Silent}
         MessageBox MB_OK|MB_ICONEXCLAMATION "Your installed version of Erlang ($erlang_otp_version) is too old. Please install a more recent version [${ERLANG_MIN_VERSION},${ERLANG_MAX_VERSION})."
       ${EndIf}
-      Abort
+	  SetErrorLevel 23
+	  Abort
     ${EndIf}
 
     ${If} "${ERLANG_MAX_VERSION}" != ""
@@ -479,7 +483,8 @@ Function findErlang
         ${IfNot} ${Silent}
           MessageBox MB_OK|MB_ICONEXCLAMATION "Your installed version of Erlang ($erlang_otp_version) is too new. Please install a less recent version [${ERLANG_MIN_VERSION},${ERLANG_MAX_VERSION})."
         ${EndIf}
-        Abort
+		SetErrorLevel 24
+		Abort
       ${EndIf}
     ${EndIf}
 
@@ -501,7 +506,8 @@ Function FinishPage.Run
     ${IfNot} ${Silent}
       MessageBox MB_OK "rabbitmq-service.bat start exited with code $0."
     ${EndIf}
-    Abort
+	SetErrorLevel 11
+	Abort
   ${EndIf}
 FunctionEnd
 
