@@ -506,7 +506,7 @@ Function FinishPage.Run
     ${IfNot} ${Silent}
       MessageBox MB_OK "rabbitmq-service.bat start exited with code $0."
     ${EndIf}
-      SetErrorLevel 11
+      SetErrorLevel 12
       Abort
   ${EndIf}
 FunctionEnd
