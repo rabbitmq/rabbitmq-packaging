@@ -182,8 +182,8 @@ Section "RabbitMQ Service" RabbitService
     ${IfNot} ${Silent}
       MessageBox MB_OK "rabbitmq-service.bat install exited with code $0."
     ${EndIf}
-	SetErrorLevel 11
-	Abort
+      SetErrorLevel 11
+      Abort
   ${EndIf}
   ReadEnvStr $1 "HOMEDRIVE"
   ReadEnvStr $2 "HOMEPATH"
@@ -316,11 +316,11 @@ Function .onInit
 
   ReadRegStr $0 HKLM ${uninstall} "UninstallString"
   ${If} $0 != ""
-	${IfNot} ${Silent}
-		MessageBox MB_OKCANCEL|MB_ICONEXCLAMATION "RabbitMQ is already installed. $\n$\nClick 'OK' to remove the previous version or 'Cancel' to cancel this installation." /SD IDOK IDOK rununinstall IDCANCEL norun
-		norun:
-		Abort
-	${EndIf}
+    ${IfNot} ${Silent}
+      MessageBox MB_OKCANCEL|MB_ICONEXCLAMATION "RabbitMQ is already installed. $\n$\nClick 'OK' to remove the previous version or 'Cancel' to cancel this installation." /SD IDOK IDOK rununinstall IDCANCEL norun
+      norun:
+      Abort
+    ${EndIf}
 
     rununinstall:
     ;Run the uninstaller
@@ -422,13 +422,13 @@ Function findErlang
   ${Loop}
 
   ${If} $2 = "not-found"
-   ${IfNot} ${Silent}
-		MessageBox MB_YESNO|MB_ICONEXCLAMATION "Erlang could not be detected.$\nYou must install Erlang before installing RabbitMQ. Would you like the installer to open a browser window to the Erlang download site?" IDNO abort
-		ExecShell "open" "https://www.erlang.org/downloads"
-	${EndIf}
-	abort:
-	SetErrorLevel 21
-	Abort
+    ${IfNot} ${Silent}
+      MessageBox MB_YESNO|MB_ICONEXCLAMATION "Erlang could not be detected.$\nYou must install Erlang before installing RabbitMQ. Would you like the installer to open a browser window to the Erlang download site?" IDNO abort
+      ExecShell "open" "https://www.erlang.org/downloads"
+    ${EndIf}
+    abort:
+    SetErrorLevel 21
+    Abort
   ${Else}
     Var /GLOBAL erlang_otp_dir
     Var /GLOBAL erlang_otp_version_file
@@ -455,10 +455,10 @@ Function findErlang
 
     otp_version_error:
     ${IfNot} ${Silent}
-      MessageBox MB_OK|MB_ICONEXCLAMATION "Failed to read the version of Erlang/OTP from file $erlang_otp_version_file"
+     MessageBox MB_OK|MB_ICONEXCLAMATION "Failed to read the version of Erlang/OTP from file $erlang_otp_version_file"
     ${EndIf}
-	SetErrorLevel 22
-	Abort
+     SetErrorLevel 22
+     Abort
 
     compare_otp_versions:
     FileRead $1 $erlang_otp_version
@@ -473,8 +473,8 @@ Function findErlang
       ${IfNot} ${Silent}
         MessageBox MB_OK|MB_ICONEXCLAMATION "Your installed version of Erlang ($erlang_otp_version) is too old. Please install a more recent version [${ERLANG_MIN_VERSION},${ERLANG_MAX_VERSION})."
       ${EndIf}
-	  SetErrorLevel 23
-	  Abort
+        SetErrorLevel 23
+        Abort
     ${EndIf}
 
     ${If} "${ERLANG_MAX_VERSION}" != ""
@@ -483,8 +483,8 @@ Function findErlang
         ${IfNot} ${Silent}
           MessageBox MB_OK|MB_ICONEXCLAMATION "Your installed version of Erlang ($erlang_otp_version) is too new. Please install a less recent version [${ERLANG_MIN_VERSION},${ERLANG_MAX_VERSION})."
         ${EndIf}
-		SetErrorLevel 24
-		Abort
+        SetErrorLevel 24
+        Abort
       ${EndIf}
     ${EndIf}
 
@@ -506,8 +506,8 @@ Function FinishPage.Run
     ${IfNot} ${Silent}
       MessageBox MB_OK "rabbitmq-service.bat start exited with code $0."
     ${EndIf}
-	SetErrorLevel 11
-	Abort
+      SetErrorLevel 11
+      Abort
   ${EndIf}
 FunctionEnd
 
