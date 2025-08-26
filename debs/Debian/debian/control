@@ -3,7 +3,7 @@ Section: net
 Priority: extra
 Maintainer: RabbitMQ Team <teamrabbitmq@gmail.com>
 Uploaders: Michael Klishin <michael@clojurewerkz.org>,
- Karl Nilsson <nkarl@vmware.com>,
+ Karl Nilsson <kjnilsson@gmail.com>,
  Jean-Sébastien Pédron <jean-sebastien.pedron@dumbbell.fr>
 Build-Depends: debhelper (>= 9),
  erlang-base (>= 1:26.0) | erlang-base-hipe (>= 1:26.0) | esl-erlang (>= 1:26.0),
