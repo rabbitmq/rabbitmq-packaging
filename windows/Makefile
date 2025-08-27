@@ -37,7 +37,7 @@ dist:
 	@elixir --version
 	@echo '--------------------------------------------------'
 	@echo
-	xzcat $(SOURCE_DIST_FILE) | tar -xf -
+	tar --touch --xz --extract --file $(SOURCE_DIST_FILE)
 
 # We explicitely set $HOME as a Make variable below because some package
 # builders do that, as part of cleaning the build environment. It

@@ -74,7 +74,7 @@ endif
 	cp -a "$(SOURCE_DIST_FILE)" "$(DEBIAN_ORIG_TARBALL)"
 # Prepare the source directory: we extract the source archive and copy
 # the debian/ subdirectory.
-	xzcat "$(DEBIAN_ORIG_TARBALL)" | tar -xf -
+	tar --touch --xz --extract --file $(DEBIAN_ORIG_TARBALL)
 	cp -a debian "$(UNPACKED_DIR)/debian"
 ifeq ($(INSTALL_BUILD_DEPS),yes)
 # Install build dependencies. To help us, we use mk-build-deps(1) from
