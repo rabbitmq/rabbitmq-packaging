@@ -1,0 +1,66 @@
+#!/bin/sh
+
+set -e
+
+if [ "$1" = "upgrade" ] && [ -n "$2" ] && [ -n "$3" ]; then
+    # $2 is the old version, $3 is the new version
+    OLD_VERSION="$2"
+    NEW_VERSION="$3"
+    # Hard-coded max/min values for major version transitions
+    MAX_3="3.13"
+    MIN_4="4.0"
+
+
+    # Only check for disabled features when upgrading (new version > old version)
+    dpkg --compare-versions "$NEW_VERSION" gt "$OLD_VERSION"
+    IS_UPGRADE=$?
+    if [ "$IS_UPGRADE" -eq 0 ]; then
+        if command -v rabbitmqctl >/dev/null 2>&1; then
+            DISABLED_FEATURES=$(rabbitmqctl list_feature_flags --formatter csv name state stability 2>/dev/null | awk -F, 'NR>1 && $2 ~ /disabled/ && $3 !~ /experimental/ {print $1}')
+            if [ -n "$DISABLED_FEATURES" ]; then
+                echo "ERROR: Disabled non-experimental features detected:"
+                echo "$DISABLED_FEATURES" | sed 's/\"//g'
+                echo "Please enable all non-experimental features before upgrading." >&2
+                echo "You can enable all features with: rabbitmqctl enable_feature_flag all" >&2
+                exit 1
+            fi
+        fi
+    fi
+    # Extract major and minor versions
+    OLD_MAJOR=$(echo "$OLD_VERSION" | cut -d. -f1)
+    OLD_MINOR=$(echo "$OLD_VERSION" | cut -d. -f2)
+    NEW_MAJOR=$(echo "$NEW_VERSION" | cut -d. -f1)
+    NEW_MINOR=$(echo "$NEW_VERSION" | cut -d. -f2)
+
+    if [ "$OLD_MAJOR" -eq "$NEW_MAJOR" ]; then
+        MINOR_DIFF=$((NEW_MINOR - OLD_MINOR))
+        if [ "$MINOR_DIFF" -gt 1 ]; then
+            echo "ERROR: Upgrade skips a minor version (from $OLD_VERSION to $NEW_VERSION). Please upgrade one minor version at a time." >&2
+            exit 1
+        elif [ "$MINOR_DIFF" -lt -1 ]; then
+            echo "ERROR: Downgrade skips a minor version (from $OLD_VERSION to $NEW_VERSION). Please downgrade one minor version at a time." >&2
+            exit 1
+        fi
+    elif [ "$OLD_MAJOR" -eq 3 ] && [ "$NEW_MAJOR" -eq 4 ]; then
+        # Allow upgrade from 3.13 to 4.0 only
+        if [ "${OLD_MAJOR}.${OLD_MINOR}" = "$MAX_3" ] && [ "${NEW_MAJOR}.${NEW_MINOR}" = "$MIN_4" ]; then
+            : # allowed
+        else
+            echo "ERROR: Only upgrade from $MAX_3 to $MIN_4 is allowed when changing from 3.x to 4.x (from $OLD_VERSION to $NEW_VERSION)." >&2
+            exit 1
+        fi
+    elif [ "$OLD_MAJOR" -eq 4 ] && [ "$NEW_MAJOR" -eq 3 ]; then
+        # Allow downgrade from 4.0 to 3.13 only
+        if [ "${OLD_MAJOR}.${OLD_MINOR}" = "$MIN_4" ] && [ "${NEW_MAJOR}.${NEW_MINOR}" = "$MAX_3" ]; then
+            : # allowed
+        else
+            echo "ERROR: Only downgrade from $MIN_4 to $MAX_3 is allowed when changing from 4.x to 3.x (from $OLD_VERSION to $NEW_VERSION)." >&2
+            exit 1
+        fi
+    elif [ "$OLD_MAJOR" -ne "$NEW_MAJOR" ]; then
+        echo "ERROR: Skipping major versions is not allowed (from $OLD_VERSION to $NEW_VERSION)." >&2
+        exit 1
+    fi
+fi
+
+exit 0
