@@ -7,7 +7,7 @@ then
 
     mv -vf "$uninstall_exe" "$uninstall_tmp"
 
-    /usr/bin/osslsigncode sign \
+    osslsigncode sign \
       -certs "$CODE_SIGNING_CERT" \
       -key "$CODE_SIGNING_KEY" \
       -n "RabbitMQ Server $VERSION Uninstall" \
