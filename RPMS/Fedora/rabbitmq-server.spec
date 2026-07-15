@@ -1,11 +1,6 @@
 %define debug_package %{nil}
-<<<<<<< HEAD
-%define erlang_minver 26.0
-%define erlang_maxver 27.0
-=======
 %define erlang_minver 27.0
-%define erlang_maxver 29.0
->>>>>>> b7fe13a (References rabbitmq/rabbitmq-server#16914)
+%define erlang_maxver 28.0
 
 Name: rabbitmq-server
 Version: %%VERSION%%
